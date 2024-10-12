@@ -6,6 +6,7 @@ const COMMON_BUILD_OPTIONS: BuildOptions = {
   entryPoints: [resolve(__dirname, '../src/index.ts')],
   platform: 'node',
   bundle: true,
+  external: ['esbuild'],
 };
 
 async function build(): Promise<void> {
