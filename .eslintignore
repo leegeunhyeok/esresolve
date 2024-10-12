@@ -1,0 +1,5 @@
+dist/
+cjs/
+esm/
+
+**/__fixtures__
