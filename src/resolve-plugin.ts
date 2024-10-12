@@ -39,25 +39,11 @@ export function createResolvePlugin(
           return null;
         }
 
-        return {
-          ...result,
-          pluginData: {
-            path: result.path,
-            request: originalPath,
-          } as ResolveResult,
-        };
+        dependencies.push({ path: result.path, request: originalPath });
       });
 
       build.onLoad({ filter: /.*/, namespace: ENTRY_NAMESPACE }, () => {
         return { contents: createEntryScript(requests), loader: 'ts' };
-      });
-
-      build.onLoad({ filter: /.*/ }, (args) => {
-        if (args.pluginData) {
-          dependencies.push(args.pluginData as ResolveResult);
-        }
-
-        return { contents: '', loader: 'empty' };
       });
 
       build.onEnd(() => {
