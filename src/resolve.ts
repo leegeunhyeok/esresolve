@@ -47,7 +47,7 @@ export async function resolve(
           ),
         ],
       })
-      .catch(() => void 0);
+      .catch(reject);
   });
 }
 
