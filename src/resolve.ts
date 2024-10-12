@@ -1,19 +1,7 @@
 import * as path from 'node:path';
 import * as esbuild from 'esbuild';
 import { createResolvePlugin } from './resolve-plugin';
-import type { ResolveResult } from './types';
-
-type BuildOptions = esbuild.BuildOptions;
-
-export interface ResolveOptions {
-  root?: string;
-  extensions?: BuildOptions['resolveExtensions'];
-  conditionNames?: BuildOptions['conditions'];
-  mainFields?: BuildOptions['mainFields'];
-  alias?: BuildOptions['alias'];
-  tsconfig?: BuildOptions['tsconfig'];
-  tsconfigRaw?: BuildOptions['tsconfigRaw'];
-}
+import type { ResolveOptions, ResolveResult } from './types';
 
 export async function resolve(
   baseDir: string,
