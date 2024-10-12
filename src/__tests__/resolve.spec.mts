@@ -3,22 +3,26 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { resolve } from '../resolve.js';
 import { ResolveResult } from '../types.js';
 
+const ROOT = path.join(import.meta.dirname, '__fixtures__');
+
+function stripRootPath(results: ResolveResult[]) {
+  return results.map((result) => ({
+    ...result,
+    path: path.relative(process.cwd(), result.path),
+  }));
+}
+
+function sort(results: ResolveResult[]) {
+  return results.sort((a, b) => (a.path > b.path ? 1 : -1));
+}
+
 describe('resolve', () => {
-  const ROOT = path.join(import.meta.dirname, '__fixtures__');
-
-  function stripRootPath(results: ResolveResult[]) {
-    return results.map((result) => ({
-      ...result,
-      path: path.relative(process.cwd(), result.path),
-    }));
-  }
-
   describe('resolve with single request', () => {
     it('should returns resolved path', async () => {
       const results = await resolve(ROOT, './a');
 
       expect(results.length).toEqual(1);
-      expect(stripRootPath(results)).toMatchInlineSnapshot(`
+      expect(sort(stripRootPath(results))).toMatchInlineSnapshot(`
         [
           {
             "path": "src/__tests__/__fixtures__/a.ts",
@@ -34,12 +38,8 @@ describe('resolve', () => {
       const results = await resolve(ROOT, ['./a', './b', './c']);
 
       expect(results.length).toEqual(3);
-      expect(stripRootPath(results)).toMatchInlineSnapshot(`
+      expect(sort(stripRootPath(results))).toMatchInlineSnapshot(`
         [
-          {
-            "path": "src/__tests__/__fixtures__/c.ts",
-            "request": "./c",
-          },
           {
             "path": "src/__tests__/__fixtures__/a.ts",
             "request": "./a",
@@ -47,6 +47,68 @@ describe('resolve', () => {
           {
             "path": "src/__tests__/__fixtures__/b.ts",
             "request": "./b",
+          },
+          {
+            "path": "src/__tests__/__fixtures__/c.ts",
+            "request": "./c",
+          },
+        ]
+      `);
+    });
+  });
+
+  describe('when `extensions` option is provided', () => {
+    it('should be resolved according to the extension priority', async () => {
+      const results = await resolve(ROOT, ['./a'], {
+        extensions: ['.native.ts', '.ts'],
+      });
+
+      expect(results[0].path.endsWith('a.native.ts')).toBe(true);
+    });
+  });
+});
+
+describe('resolve.create', () => {
+  let resolver: ReturnType<typeof resolve.create>;
+
+  beforeAll(() => {
+    resolver = resolve.create({});
+  });
+
+  describe('resolve with single request', () => {
+    it('should returns resolved path', async () => {
+      const results = await resolver(ROOT, './a');
+
+      expect(results.length).toEqual(1);
+      expect(sort(stripRootPath(results))).toMatchInlineSnapshot(`
+        [
+          {
+            "path": "src/__tests__/__fixtures__/a.ts",
+            "request": "./a",
+          },
+        ]
+      `);
+    });
+  });
+
+  describe('resolve with multiple requests', () => {
+    it('should returns resolved paths', async () => {
+      const results = await resolver(ROOT, ['./a', './b', './c']);
+
+      expect(results.length).toEqual(3);
+      expect(sort(stripRootPath(results))).toMatchInlineSnapshot(`
+        [
+          {
+            "path": "src/__tests__/__fixtures__/a.ts",
+            "request": "./a",
+          },
+          {
+            "path": "src/__tests__/__fixtures__/b.ts",
+            "request": "./b",
+          },
+          {
+            "path": "src/__tests__/__fixtures__/c.ts",
+            "request": "./c",
           },
         ]
       `);

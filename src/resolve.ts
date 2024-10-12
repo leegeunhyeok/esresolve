@@ -54,3 +54,8 @@ export async function resolve(
       .catch(() => void 0);
   });
 }
+
+resolve.create = function create(options?: ResolveOptions) {
+  return (baseDir: string, request: string | string[]) =>
+    resolve(baseDir, request, options);
+};
