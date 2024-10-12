@@ -15,10 +15,9 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*.js",
-    "dist/**/*.cjs",
-    "dist/**/*.mjs",
     "dist/**/*.d.ts",
-    "README.md"
+    "cjs/**/*.cjs",
+    "esm/**/*.mjs"
   ],
   "scripts": {
     "prepack": "yarn cleanup && yarn build",
