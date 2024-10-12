@@ -35,8 +35,10 @@ module.exports = {
         'no-console': 'off',
         'no-param-reassign': 'off',
         'no-nested-ternary': 'off',
+        '@typescript-eslint/no-shadow': 'off',
         '@typescript-eslint/no-unnecessary-condition': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        '@typescript-eslint/no-confusing-void-expression': 'off',
       },
     },
     {

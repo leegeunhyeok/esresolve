@@ -1,1 +1,2 @@
-console.log('Hello, world!');
+export { resolve } from './resolve';
+export * from './types';

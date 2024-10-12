@@ -15,6 +15,7 @@
 dist/
 cjs/
 esm/
+node_modules/
 
 # Miscs
 *.log
