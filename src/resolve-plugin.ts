@@ -22,6 +22,7 @@ export function createResolvePlugin(
           return { path: args.path, namespace: ENTRY_NAMESPACE };
         }
 
+        // To avoid recursive resolving
         if (args.pluginData === RESOLVING) {
           return null;
         }
@@ -59,9 +60,9 @@ export function createResolvePlugin(
         return { contents: '', loader: 'empty' };
       });
 
-      build.onEnd(() =>
-        callback(dependencies, hasError || dependencies.length === 0),
-      );
+      build.onEnd(() => {
+        callback(dependencies, hasError || dependencies.length === 0);
+      });
     },
   };
 }
