@@ -1,0 +1,45 @@
+{
+  "name": "esresolver",
+  "packageManager": "yarn@4.5.0",
+  "author": "leegeunhyeok <dev.ghlee@gmail.com>",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.cjs",
+    "dist/**/*.mjs",
+    "dist/**/*.d.ts",
+    "README.md"
+  ],
+  "scripts": {
+    "prepack": "yarn cleanup && yarn build",
+    "lint": "eslint .",
+    "test": "vitest",
+    "build": "node -r @swc-node/register build/index.ts && tsc -p tsconfig.build.json",
+    "release": "release-it",
+    "cleanup": "rm -rf dist cjs esm"
+  },
+  "devDependencies": {
+    "@swc-node/register": "^1.10.9",
+    "@swc/core": "^1.7.35",
+    "@types/node": "^20",
+    "@vercel/style-guide": "^6.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^8",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "release-it": "^17.8.2",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2"
+  }
+}
