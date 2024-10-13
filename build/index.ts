@@ -1,8 +1,7 @@
 import { resolve } from 'node:path';
 import * as esbuild from 'esbuild';
-import type { BuildOptions } from 'esbuild';
 
-const COMMON_BUILD_OPTIONS: BuildOptions = {
+const COMMON_BUILD_OPTIONS: esbuild.BuildOptions = {
   entryPoints: [resolve(__dirname, '../src/index.ts')],
   platform: 'node',
   bundle: true,
