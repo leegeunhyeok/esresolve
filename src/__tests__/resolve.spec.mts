@@ -57,6 +57,13 @@ describe('resolve', () => {
     });
   });
 
+  describe('when request with invalid source', () => {
+    it('should throw error', async () => {
+      expect(() => resolve(ROOT, './not-exist')).rejects.toThrow();
+      expect(() => resolve(ROOT, ['./a', './not-exist'])).rejects.toThrow();
+    });
+  });
+
   describe('when `extensions` option is provided', () => {
     it('should be resolved according to the extension priority', async () => {
       const results = await resolve(ROOT, ['./a'], {
