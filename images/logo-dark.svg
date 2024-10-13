@@ -1,0 +1,7 @@
+<svg width="740" height="250" fill="black" font-family="sans-serif" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="125" cy="125" r="75" fill="#FFCF00"/>
+  <circle cx="135" cy="110" r="30" stroke="#191919" stroke-width="18" fill="none"/>
+  <line x1="85" y1="170" x2="115" y2="135" stroke="#191919" stroke-width="18" />
+  <text x="241" y="152" font-size="100" font-weight="bold" fill="#C9D1D9">esresolve</text>
+  <text x="241" y="184" font-size="21" font-style="italic" fill="#C9D1D9">A powerful module resolver based on esbuild.</text>
+</svg>

@@ -1,4 +1,10 @@
-![logo](./logo.svg)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="./images/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="./images/logo-light.svg">
+    <img alt="esresolve: A powerful module resolver based on esbuild" src="./images/logo-light.svg">
+  </picture>
+</p>
 
 ## Usage
 
