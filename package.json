@@ -1,5 +1,5 @@
 {
-  "name": "esresolver",
+  "name": "esresolve",
   "packageManager": "yarn@4.5.0",
   "author": "leegeunhyeok <dev.ghlee@gmail.com>",
   "exports": {
@@ -44,5 +44,5 @@
   "peerDependencies": {
     "esbuild": "*"
   },
-  "version": "0.1.2"
+  "version": "0.0.0"
 }

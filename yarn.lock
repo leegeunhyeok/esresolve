@@ -3551,9 +3551,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esresolver@workspace:.":
+"esresolve@workspace:.":
   version: 0.0.0-use.local
-  resolution: "esresolver@workspace:."
+  resolution: "esresolve@workspace:."
   dependencies:
     "@swc-node/register": "npm:^1.10.9"
     "@swc/core": "npm:^1.7.35"

@@ -3,7 +3,7 @@
 ## Usage
 
 ```ts
-import { resolve } from 'esresolver';
+import { resolve } from 'esresolve';
 
 // 1. Resolve module path from base path.
 await resolve('/path/to/workspace', './my-module', {
