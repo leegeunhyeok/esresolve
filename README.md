@@ -28,6 +28,19 @@ const resolver = resolve.create({
 await resolver('/path/to/workspace', './my-module');
 ```
 
+```ts
+// Resolve result
+const result = await resolve('/path/to/workspace', './my-module');
+
+// <result>
+// [
+//   {
+//     request: './my-module',
+//     path: '/path/to/workspace/src/core/my-module/index.ts',
+//   }
+// ]
+```
+
 <details>
 
   <summary>Options</summary>
