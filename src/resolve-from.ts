@@ -16,9 +16,15 @@ export async function resolveFrom(
   return new Promise<ResolveResult[]>((resolve, reject) => {
     const resolvePlugin = createResolvePlugin({
       entryPoint: targetModule,
-      callback: (dependencies, hasError) => {
-        hasError
-          ? reject(new Error(`cannot resolve module(s) from ${targetModule}`))
+      callback: (dependencies, errors) => {
+        errors.length
+          ? reject(
+              new Error(
+                `cannot resolve module(s) from ${targetModule}\n\n${errors.join(
+                  '\n',
+                )}`,
+              ),
+            )
           : resolve(dependencies);
       },
     });

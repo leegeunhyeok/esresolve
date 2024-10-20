@@ -24,9 +24,9 @@ export async function resolve(
     const resolvePlugin = createResolvePlugin({
       entryPoint,
       requests,
-      callback: (dependencies, hasError) => {
-        hasError
-          ? reject(new Error(`cannot resolve ${requests.join(', ')}`))
+      callback: (dependencies, errors) => {
+        errors.length
+          ? reject(new Error(`cannot resolve modules\n\n${errors.join('\n')}`))
           : resolve(dependencies);
       },
     });

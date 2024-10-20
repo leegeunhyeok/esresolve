@@ -10,7 +10,7 @@ const ENTRY_NAMESPACE = 'entry';
 interface ResolvePluginOptions {
   entryPoint: string;
   requests?: string[];
-  callback: (dependencies: ResolveResult[], hasError: boolean) => void;
+  callback: (dependencies: ResolveResult[], errors: string[]) => void;
 }
 
 export function createResolvePlugin({
@@ -19,7 +19,7 @@ export function createResolvePlugin({
   callback,
 }: ResolvePluginOptions): Plugin {
   const dependencies: ResolveResult[] = [];
-  let hasError = false;
+  const errors: string[] = [];
 
   return {
     name: 'resolve-plugin',
@@ -42,15 +42,9 @@ export function createResolvePlugin({
           pluginData: RESOLVING,
         });
 
-        if (result.errors.length) {
-          console.log(result.errors);
-        }
-
-        if ((hasError ||= Boolean(result.errors.length))) {
-          return null;
-        }
-
-        dependencies.push({ path: result.path, request: originalPath });
+        result.errors.length
+          ? result.errors.forEach(({ text }) => errors.push(text))
+          : dependencies.push({ path: result.path, request: originalPath });
       });
 
       build.onLoad(
@@ -65,7 +59,13 @@ export function createResolvePlugin({
       );
 
       build.onEnd(() => {
-        callback(dependencies, hasError || dependencies.length === 0);
+        callback(
+          dependencies,
+          [
+            dependencies.length === 0 ? 'result is empty' : undefined,
+            ...errors,
+          ].filter(Boolean) as string[],
+        );
       });
     },
   };
