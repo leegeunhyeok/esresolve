@@ -14,10 +14,5 @@ export function toBuildOptions(
     alias: options?.alias,
     tsconfig: options?.tsconfig,
     tsconfigRaw: options?.tsconfigRaw,
-    write: false,
-    metafile: false,
-    treeShaking: false,
-    bundle: true,
-    logLevel: 'silent',
   };
 }

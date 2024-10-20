@@ -32,7 +32,13 @@ export async function resolveFrom(
     esbuild
       .build({
         ...toBuildOptions(targetModule, options),
+        entryPoints: [targetModule],
         plugins: [resolvePlugin],
+        write: false,
+        metafile: false,
+        treeShaking: false,
+        bundle: true,
+        logLevel: 'silent',
       })
       .catch(reject);
   });
