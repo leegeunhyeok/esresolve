@@ -7,13 +7,13 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs",
+      "require": "./cjs/index.cjs",
+      "import": "./esm/index.mjs",
       "default": "./dist/index.js"
     }
   },
   "main": "dist/index.js",
-  "module": "dist/index.mjs",
+  "module": "mjs/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist/**/*.js",
