@@ -1,6 +1,6 @@
 {
   "name": "esresolve",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "leegeunhyeok <dev.ghlee@gmail.com>",
   "description": "A powerful module resolver based on esbuild",
   "packageManager": "yarn@4.5.0",
