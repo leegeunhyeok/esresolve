@@ -9,7 +9,7 @@
 ## Usage
 
 ```ts
-import { resolve } from 'esresolve';
+import { resolve, resolveFrom } from 'esresolve';
 
 // 1. Resolve module path from base path.
 await resolve('/path/to/workspace', './my-module', {
@@ -26,6 +26,11 @@ const resolver = resolve.create({
   /* options */
 });
 await resolver('/path/to/workspace', './my-module');
+
+// 4. Resolve dependencies from specified module.
+await resolveFrom('/path/to/module.ts', {
+  /* options */
+});
 ```
 
 ```ts

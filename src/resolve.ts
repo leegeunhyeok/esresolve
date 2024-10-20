@@ -2,6 +2,7 @@ import * as path from 'node:path';
 import * as esbuild from 'esbuild';
 import { createResolvePlugin } from './resolve-plugin';
 import type { ResolveOptions, ResolveResult } from './types';
+import { toBuildOptions } from './to-build-options';
 
 /**
  * Resolve the module(s) from the specified path.
@@ -20,32 +21,20 @@ export async function resolve(
   const requests = Array.isArray(request) ? request : [request];
 
   return new Promise<ResolveResult[]>((resolve, reject) => {
+    const resolvePlugin = createResolvePlugin({
+      entryPoint,
+      requests,
+      callback: (dependencies, hasError) => {
+        hasError
+          ? reject(new Error(`cannot resolve ${requests.join(', ')}`))
+          : resolve(dependencies);
+      },
+    });
+
     esbuild
       .build({
-        entryPoints: [entryPoint],
-        absWorkingDir: options?.root,
-        resolveExtensions: options?.extensions,
-        conditions: options?.conditionNames,
-        mainFields: options?.mainFields,
-        alias: options?.alias,
-        tsconfig: options?.tsconfig,
-        tsconfigRaw: options?.tsconfigRaw,
-        write: false,
-        metafile: false,
-        treeShaking: false,
-        bundle: true,
-        logLevel: 'silent',
-        plugins: [
-          createResolvePlugin(
-            entryPoint,
-            requests,
-            (dependencies, hasError) => {
-              hasError
-                ? reject(new Error(`cannot resolve ${requests.join(', ')}`))
-                : resolve(dependencies);
-            },
-          ),
-        ],
+        ...toBuildOptions(entryPoint, options),
+        plugins: [resolvePlugin],
       })
       .catch(reject);
   });

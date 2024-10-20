@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import type { Plugin } from 'esbuild';
 import { createEntryScript } from './create-entry-script';
@@ -6,11 +7,17 @@ import type { ResolveResult } from './types';
 const RESOLVING = Symbol('resolving');
 const ENTRY_NAMESPACE = 'entry';
 
-export function createResolvePlugin(
-  entryPoint: string,
-  requests: string[],
-  callback: (dependencies: ResolveResult[], hasError: boolean) => void,
-): Plugin {
+interface ResolvePluginOptions {
+  entryPoint: string;
+  requests?: string[];
+  callback: (dependencies: ResolveResult[], hasError: boolean) => void;
+}
+
+export function createResolvePlugin({
+  entryPoint,
+  requests,
+  callback,
+}: ResolvePluginOptions): Plugin {
   const dependencies: ResolveResult[] = [];
   let hasError = false;
 
@@ -35,6 +42,10 @@ export function createResolvePlugin(
           pluginData: RESOLVING,
         });
 
+        if (result.errors.length) {
+          console.log(result.errors);
+        }
+
         if ((hasError ||= Boolean(result.errors.length))) {
           return null;
         }
@@ -42,9 +53,16 @@ export function createResolvePlugin(
         dependencies.push({ path: result.path, request: originalPath });
       });
 
-      build.onLoad({ filter: /.*/, namespace: ENTRY_NAMESPACE }, () => {
-        return { contents: createEntryScript(requests), loader: 'ts' };
-      });
+      build.onLoad(
+        { filter: /.*/, namespace: ENTRY_NAMESPACE },
+        async (args) =>
+          Array.isArray(requests)
+            ? { loader: 'ts', contents: createEntryScript(requests) }
+            : {
+                loader: /.ts?x$/.test(args.path) ? 'tsx' : 'jsx',
+                contents: await fs.readFile(args.path, 'utf-8'),
+              },
+      );
 
       build.onEnd(() => {
         callback(dependencies, hasError || dependencies.length === 0);
