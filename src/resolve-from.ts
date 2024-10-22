@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import * as esbuild from 'esbuild';
 import { createResolvePlugin } from './resolve-plugin';
 import { toBuildOptions } from './to-build-options';
@@ -13,9 +14,14 @@ export async function resolveFrom(
   targetModule: string,
   options?: ResolveOptions,
 ): Promise<ResolveResult[]> {
+  const resolvedModulePath = path.resolve(
+    options?.root ?? process.cwd(),
+    targetModule,
+  );
+
   return new Promise<ResolveResult[]>((resolve, reject) => {
     const resolvePlugin = createResolvePlugin({
-      entryPoint: targetModule,
+      entryPoint: resolvedModulePath,
       callback: (dependencies, errors) => {
         errors.length
           ? reject(
@@ -31,8 +37,8 @@ export async function resolveFrom(
 
     esbuild
       .build({
-        ...toBuildOptions(targetModule, options),
-        entryPoints: [targetModule],
+        ...toBuildOptions(resolvedModulePath, options),
+        entryPoints: [resolvedModulePath],
         plugins: [resolvePlugin],
         write: false,
         metafile: false,
