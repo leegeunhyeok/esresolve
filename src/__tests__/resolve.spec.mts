@@ -152,11 +152,15 @@ describe('resolveFrom', () => {
 
   describe('when the target module does not have any dependencies', () => {
     it('should not throw error', async () => {
-      const target = path.join(ROOT, './a.ts');
+      const relativeResult = await resolveFrom('./a', {
+        root: ROOT,
+      });
+      const absoluteResult = await resolveFrom(path.join(ROOT, './a.ts'), {
+        root: ROOT,
+      });
 
-      const result = await resolveFrom(target);
-
-      expect(result).toHaveLength(0);
+      expect(relativeResult).toHaveLength(0);
+      expect(absoluteResult).toHaveLength(0);
     });
   });
 
