@@ -25,13 +25,9 @@ export function createResolvePlugin({
     name: 'resolve-plugin',
     setup(build) {
       build.onResolve({ filter: /.*/ }, async (args) => {
-        if (args.kind === 'entry-point') {
-          return { path: args.path, namespace: ENTRY_NAMESPACE };
-        }
-
         // To avoid recursive resolving
         if (args.pluginData === RESOLVING) {
-          return null;
+          return;
         }
 
         const originalPath = args.path;
@@ -42,9 +38,16 @@ export function createResolvePlugin({
           pluginData: RESOLVING,
         });
 
-        result.errors.length
-          ? result.errors.forEach(({ text }) => errors.push(text))
-          : dependencies.push({ path: result.path, request: originalPath });
+        if (result.errors.length) {
+          result.errors.forEach(({ text }) => errors.push(text));
+          return;
+        }
+
+        if (args.kind === 'entry-point') {
+          return { path: result.path, namespace: ENTRY_NAMESPACE };
+        }
+
+        dependencies.push({ path: result.path, request: originalPath });
       });
 
       build.onLoad(
@@ -59,13 +62,7 @@ export function createResolvePlugin({
       );
 
       build.onEnd(() => {
-        callback(
-          dependencies,
-          [
-            dependencies.length === 0 ? 'result is empty' : undefined,
-            ...errors,
-          ].filter(Boolean) as string[],
-        );
+        callback(dependencies, errors);
       });
     },
   };

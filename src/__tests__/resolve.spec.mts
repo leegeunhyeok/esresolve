@@ -150,6 +150,16 @@ describe('resolveFrom', () => {
     });
   });
 
+  describe('when the target module does not have any dependencies', () => {
+    it('should not throw error', async () => {
+      const target = path.join(ROOT, './a.ts');
+
+      const result = await resolveFrom(target);
+
+      expect(result).toHaveLength(0);
+    });
+  });
+
   describe('when request with invalid source', () => {
     it('should throw error', async () => {
       const invalidEntry = path.join(ROOT, './not-exist.ts');
