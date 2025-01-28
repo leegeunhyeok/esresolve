@@ -1,8 +1,7 @@
-import * as esbuild from 'esbuild';
 import { createVirtualEntry } from './create-virtual-entry';
-import { createDependencyCollector } from './dependency-collector';
 import type { ResolveOptions, ResolveResult } from './types';
 import { toBuildOptions } from './to-build-options';
+import { prepareResolve } from './prepare-resolve';
 
 /**
  * Resolve the module(s) from the specified path.
@@ -12,33 +11,17 @@ import { toBuildOptions } from './to-build-options';
  * @param request - Module path to resolve.
  * @param options - Resolver options.
  */
-export async function resolve(
+export function resolve(
   baseDir: string,
   request: string | string[],
   options?: ResolveOptions,
 ): Promise<ResolveResult[]> {
   const requests = Array.isArray(request) ? request : [request];
 
-  return new Promise<ResolveResult[]>((resolve, reject) => {
-    const resolvePlugin = createDependencyCollector((dependencies, errors) => {
-      errors.length
-        ? reject(new Error(`cannot resolve modules\n\n${errors.join('\n')}`))
-        : resolve(dependencies);
-    });
-
-    esbuild
-      .build({
-        ...toBuildOptions(options),
-        stdin: createVirtualEntry(baseDir, requests),
-        plugins: [resolvePlugin],
-        write: false,
-        metafile: false,
-        treeShaking: false,
-        bundle: true,
-        logLevel: 'silent',
-      })
-      .catch(reject);
-  });
+  return prepareResolve({
+    ...toBuildOptions(options),
+    stdin: createVirtualEntry(baseDir, requests),
+  })();
 }
 
 /**
