@@ -1,12 +1,8 @@
 import type { BuildOptions } from 'esbuild';
 import type { ResolveOptions } from './types';
 
-export function toBuildOptions(
-  entryPoint: string,
-  options?: ResolveOptions,
-): BuildOptions {
+export function toBuildOptions(options?: ResolveOptions): BuildOptions {
   return {
-    entryPoints: [entryPoint],
     absWorkingDir: options?.root,
     resolveExtensions: options?.extensions,
     conditions: options?.conditionNames,

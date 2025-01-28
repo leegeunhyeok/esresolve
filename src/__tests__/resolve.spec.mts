@@ -61,7 +61,9 @@ describe('resolve', () => {
   describe('when request with invalid source', () => {
     it('should throw error', async () => {
       await expect(() => resolve(ROOT, './not-exist')).rejects.toThrow();
-      await expect(() => resolve(ROOT, ['./a', './not-exist'])).rejects.toThrow();
+      await expect(() =>
+        resolve(ROOT, ['./a', './not-exist']),
+      ).rejects.toThrow();
     });
   });
 

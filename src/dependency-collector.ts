@@ -1,28 +1,19 @@
-import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import * as fs from 'node:fs/promises';
 import type { Plugin } from 'esbuild';
-import { createEntryScript } from './create-entry-script';
 import type { ResolveResult } from './types';
 
-const RESOLVING = Symbol('resolving');
+const RESOLVING = Symbol('esresolve::resolving');
 const ENTRY_NAMESPACE = 'entry';
 
-interface ResolvePluginOptions {
-  entryPoint: string;
-  requests?: string[];
-  callback: (dependencies: ResolveResult[], errors: string[]) => void;
-}
+type ResultCallback = (dependencies: ResolveResult[], errors: string[]) => void;
 
-export function createResolvePlugin({
-  entryPoint,
-  requests,
-  callback,
-}: ResolvePluginOptions): Plugin {
+export function createDependencyCollector(callback: ResultCallback): Plugin {
   const dependencies: ResolveResult[] = [];
   const errors: string[] = [];
 
   return {
-    name: 'resolve-plugin',
+    name: 'dependency-collector',
     setup(build) {
       build.onResolve({ filter: /.*/ }, async (args) => {
         // To avoid recursive resolving
@@ -32,9 +23,9 @@ export function createResolvePlugin({
 
         const originalPath = args.path;
         const result = await build.resolve(args.path, {
+          resolveDir: args.resolveDir || path.dirname(args.importer),
           importer: args.importer,
           kind: args.kind,
-          resolveDir: path.dirname(entryPoint),
           pluginData: RESOLVING,
         });
 
@@ -52,18 +43,13 @@ export function createResolvePlugin({
 
       build.onLoad(
         { filter: /.*/, namespace: ENTRY_NAMESPACE },
-        async (args) =>
-          Array.isArray(requests)
-            ? { loader: 'ts', contents: createEntryScript(requests) }
-            : {
-                loader: /.ts?x$/.test(args.path) ? 'tsx' : 'jsx',
-                contents: await fs.readFile(args.path, 'utf-8'),
-              },
+        async (args) => ({
+          loader: /.ts?x$/.test(args.path) ? 'tsx' : 'jsx',
+          contents: await fs.readFile(args.path, 'utf-8'),
+        }),
       );
 
-      build.onEnd(() => {
-        callback(dependencies, errors);
-      });
+      build.onEnd(() => callback(dependencies, errors));
     },
   };
 }
