@@ -60,8 +60,8 @@ describe('resolve', () => {
 
   describe('when request with invalid source', () => {
     it('should throw error', async () => {
-      expect(() => resolve(ROOT, './not-exist')).rejects.toThrow();
-      expect(() => resolve(ROOT, ['./a', './not-exist'])).rejects.toThrow();
+      await expect(() => resolve(ROOT, './not-exist')).rejects.toThrow();
+      await expect(() => resolve(ROOT, ['./a', './not-exist'])).rejects.toThrow();
     });
   });
 
@@ -168,7 +168,7 @@ describe('resolveFrom', () => {
     it('should throw error', async () => {
       const invalidEntry = path.join(ROOT, './not-exist.ts');
 
-      expect(() => resolveFrom(invalidEntry)).rejects.toThrow();
+      await expect(() => resolveFrom(invalidEntry)).rejects.toThrow();
     });
   });
 
