@@ -3,6 +3,7 @@
   "version": "0.3.3",
   "author": "leegeunhyeok <dev.ghlee@gmail.com>",
   "description": "A powerful module resolver based on esbuild",
+  "license": "MIT",
   "packageManager": "yarn@4.6.0",
   "exports": {
     ".": {
